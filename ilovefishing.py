@@ -45,7 +45,8 @@ if button:
         #clean_domain = domain.replace("https://www.", "") if "www." in domain else domain.replace("https://", "") 
         url = f"https://api.apilayer.com/whois/query?domain={clean_domain}"
         payload = {}
-        headers= {"apikey": "gSrTCrctg79OeB5Y9kkUWPw536trDSpO"}
+        API_KEY = st.secrets["API_KEY"]
+        headers= {"apikey": API_KEY}
         response = requests.request("GET", url, headers=headers, data = payload)
         site_url = "https://" + clean_domain
         response_for_bs = requests.get(site_url).text
@@ -83,5 +84,6 @@ if button:
                 st.error(verdict)
         else:
                 st.success("The site is safe")
+
 
 
