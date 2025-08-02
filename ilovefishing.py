@@ -11,7 +11,7 @@ from dateutil.parser import parse
 
 st.title("🔍 Phishing URL Detector")
 st.markdown("Enter a URL below to check if it's a phishing site.")
-domain = st.text_input("🔗 URL:")
+domain = st.text_input("🔗 URL:").lower()
 button = st.button("verify")
 API_KEY = st.secrets["API_KEY"]
 
@@ -83,6 +83,7 @@ if button:
                 st.error(verdict)
         else:
                 st.success("The site is safe")
+
 
 
 
