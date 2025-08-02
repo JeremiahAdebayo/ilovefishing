@@ -14,7 +14,7 @@ st.markdown("Enter a URL below to check if it's a phishing site.")
 domain = st.text_input("🔗 URL:").lower()
 button = st.button("verify")
 API_KEY = st.secrets["API_KEY"]
-
+no_error = True 
 def get_value(result,key):
       try:
         return result.get(key) or "missing"  
@@ -61,39 +61,41 @@ if button:
               result = results.get("result","missing")
         except RequestException as e:
               st.error(f"Failed to reach page : {e}")
-              st.stop()
+              no_error = False
 
         #Feature engineering
-        no_of_script = script_count(bs)
-        registrar = get_value(result,"registrar")
-        whois_privacy = "yes" if registrar!="missing" else "no"
-        title = get_title(bs)
-        dash,dot = dash_dot_count(site_url)
-
-        #Date parsing
-        date = parse(get_value(result, "creation_date")).date()
-        today = datetime.today().date()
-        delta = (today - date).days
-
-        features = pd.DataFrame({"URL":[url],
-                                  "Registrar Name":[registrar],
-                                  "WHOIS Privacy Enabled":[whois_privacy],
-                                  "Page Title":[title],
-                                  "Has Dash in Domain":[dash],
-                                  "Number of Dots in Domain":[dot],
-                                  "Number of <script> Tags":[no_of_script],
-                                  "Domain Age(days)":[delta]
-                                  })
-                      
-        model = load_model()
-        verdict = model.predict(features)[0]
-
-        if verdict==1:
-                st.error("Phishing site detected")
-        else:
-                st.success("The site is safe")
-
-
+        if no_error:
+              no_of_script = script_count(bs)
+              registrar = get_value(result,"registrar")
+              whois_privacy = "yes" if registrar!="missing" else "no"
+              title = get_title(bs)
+              dash,dot = dash_dot_count(site_url)
+      
+              #Date parsing
+              date = parse(get_value(result, "creation_date")).date()
+              today = datetime.today().date()
+              delta = (today - date).days
+      
+              features = pd.DataFrame({"URL":[url],
+                                        "Registrar Name":[registrar],
+                                        "WHOIS Privacy Enabled":[whois_privacy],
+                                        "Page Title":[title],
+                                        "Has Dash in Domain":[dash],
+                                        "Number of Dots in Domain":[dot],
+                                        "Number of <script> Tags":[no_of_script],
+                                        "Domain Age(days)":[delta]
+                                        })
+                            
+              model = load_model()
+              verdict = model.predict(features)[0]
+      
+              if verdict==1:
+                      st.error("Phishing site detected")
+              else:
+                      st.success("The site is safe")
+      
+      
+      
 
 
 
