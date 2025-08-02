@@ -54,7 +54,7 @@ if button:
               results = response.json()
               result = results.get("result","missing")
         except RequestException as e:
-              st.error(f"Failed to reach page : {e})
+              st.error(f"Failed to reach page : {e}")
               st.stop()
 
         #Feature engineering
@@ -86,6 +86,7 @@ if button:
                 st.error("Phishing site detected")
         else:
                 st.success("The site is safe")
+
 
 
 
