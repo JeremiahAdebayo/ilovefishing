@@ -13,7 +13,7 @@ st.title("🔍 Phishing URL Detector")
 st.markdown("Enter a URL below to check if it's a phishing site.")
 domain = st.text_input("🔗 URL:")
 button = st.button("verify")
-
+API_KEY = st.secrets["API_KEY"]
 
 def get_value(result,key):
       try:
@@ -45,7 +45,6 @@ if button:
         #clean_domain = domain.replace("https://www.", "") if "www." in domain else domain.replace("https://", "") 
         url = f"https://api.apilayer.com/whois/query?domain={clean_domain}"
         payload = {}
-        API_KEY = st.secrets["API_KEY"]
         headers= {"apikey": API_KEY}
         response = requests.request("GET", url, headers=headers, data = payload)
         site_url = "https://" + clean_domain
@@ -84,6 +83,7 @@ if button:
                 st.error(verdict)
         else:
                 st.success("The site is safe")
+
 
 
 
