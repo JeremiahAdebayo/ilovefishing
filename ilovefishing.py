@@ -31,7 +31,10 @@ def dash_dot_count(url):
         return dash,dot
 
 def get_title(bs):
-      title = bs.find("title").text
+      try:
+            title = bs.find("title").text
+      except:
+            title = "missing"
       return title
 
 if button:
@@ -80,4 +83,5 @@ if button:
                 st.error(verdict)
         else:
                 st.success("The site is safe")
+
 
