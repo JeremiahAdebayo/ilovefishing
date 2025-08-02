@@ -7,7 +7,7 @@ from sklearn.preprocessing import OneHotEncoder
 from bs4 import BeautifulSoup
 from datetime import  datetime
 from dateutil.parser import parse
-
+from requests.exceptions import RequestException
 
 st.title("🔍 Phishing URL Detector")
 st.markdown("Enter a URL below to check if it's a phishing site.")
@@ -86,6 +86,7 @@ if button:
                 st.error("Phishing site detected")
         else:
                 st.success("The site is safe")
+
 
 
 
