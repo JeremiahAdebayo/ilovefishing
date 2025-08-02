@@ -1,0 +1,83 @@
+import requests
+import pandas as pd
+import joblib as jb
+import streamlit as st
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder
+from bs4 import BeautifulSoup
+from datetime import  datetime
+from dateutil.parser import parse
+
+
+st.title("🔍 Phishing URL Detector")
+st.markdown("Enter a URL below to check if it's a phishing site.")
+domain = st.text_input("🔗 URL:")
+button = st.button("verify")
+
+
+def get_value(result,key):
+      try:
+        return result.get(key) or "missing"  
+      except:
+        return "missing"
+
+def script_count(bs):
+        script_count = len(bs.find_all('script'))
+        return script_count
+
+def dash_dot_count(url):
+        dot = url.count(".")
+        dash = url.count("-")
+        return dash,dot
+
+def get_title(bs):
+      title = bs.find("title").text
+      return title
+
+if button:
+    if not domain=="":
+      with st.spinner("Analyzing...."):
+      #WHOIS request
+        clean_domain = domain.replace("https://www.", "").replace("http://www.", "").replace("https://", "").replace("http://", "")
+        #clean_domain = domain.replace("https://www.", "") if "www." in domain else domain.replace("https://", "") 
+        url = f"https://api.apilayer.com/whois/query?domain={clean_domain}"
+        payload = {}
+        headers= {"apikey": "gSrTCrctg79OeB5Y9kkUWPw536trDSpO"}
+        response = requests.request("GET", url, headers=headers, data = payload)
+        site_url = "https://" + clean_domain
+        response_for_bs = requests.get(site_url).text
+        bs = BeautifulSoup(response_for_bs,"html.parser")
+        results = response.json()
+        result = results.get("result","missing")
+
+        #Feature engineering
+        no_of_script = script_count(bs)
+        registrar = get_value(result,"registrar")
+        whois_privacy = "yes" if registrar!="missing" else "no"
+        title = get_title(bs)
+        dash,dot = dash_dot_count(site_url)
+
+        #Date parsing
+        date = parse(get_value(result, "creation_date")).date()
+        today = datetime.today().date()
+        delta = (today - date).days
+
+        features = pd.DataFrame({"URL":[url],
+                                  "Registrar Name":[registrar],
+                                  "WHOIS Privacy Enabled":[whois_privacy],
+                                  "Page Title":[title],
+                                  "Has Dash in Domain":[dash],
+                                  "Number of Dots in Domain":[dot],
+                                  "Number of <script> Tags":[no_of_script],
+                                  "Domain Age(days)":[delta]
+                                  })
+        
+        model = jb.load("phishing_detector_model.joblib")
+        verdict = model.predict(features)[0]
+
+        if verdict==1:
+                st.error("Phishing site detected")
+                st.error(verdict)
+        else:
+                st.success("The site is safe")
+
