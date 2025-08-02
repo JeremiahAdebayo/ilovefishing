@@ -36,7 +36,10 @@ def get_title(bs):
       except:
             title = "missing"
       return title
-
+@st.cache_resource      
+def load_model():
+    return jb.load("phishing_detector_model.joblib")
+      
 if button:
     if not domain=="":
       with st.spinner("Analyzing...."):
@@ -47,9 +50,12 @@ if button:
         payload = {}
         headers= {"apikey": API_KEY}
         try:
-              response = requests.request("GET", url, headers=headers, data = payload)
+              response = requests.get(url, headers=headers, data = payload)
+              response.raise_for_status()
               site_url = "https://" + clean_domain
-              response_for_bs = requests.get(site_url).text
+              response_for_site = requests.get(site_url)
+              response_for_site.raise_for_status()
+              response_for_bs = response_for_site.text
               bs = BeautifulSoup(response_for_bs,"html.parser")
               results = response.json()
               result = results.get("result","missing")
@@ -78,14 +84,15 @@ if button:
                                   "Number of <script> Tags":[no_of_script],
                                   "Domain Age(days)":[delta]
                                   })
-                                  
-        model = jb.load("phishing_detector_model.joblib")
+                      
+        model = load_model()
         verdict = model.predict(features)[0]
 
         if verdict==1:
                 st.error("Phishing site detected")
         else:
                 st.success("The site is safe")
+
 
 
 
