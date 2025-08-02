@@ -41,7 +41,7 @@ if button:
     if not domain=="":
       with st.spinner("Analyzing...."):
       #WHOIS request
-        clean_domain = domain.replace("https://www.", "").replace("http://www.", "").replace("https://", "").replace("http://", "")
+        clean_domain = domain.replace("https://www.", "").replace("http://www.", "").replace("https://", "").replace("http://", "").replace("www","")
         #clean_domain = domain.replace("https://www.", "") if "www." in domain else domain.replace("https://", "") 
         url = f"https://api.apilayer.com/whois/query?domain={clean_domain}"
         payload = {}
@@ -83,6 +83,7 @@ if button:
                 st.error(verdict)
         else:
                 st.success("The site is safe")
+
 
 
 
