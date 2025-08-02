@@ -46,12 +46,16 @@ if button:
         url = f"https://api.apilayer.com/whois/query?domain={clean_domain}"
         payload = {}
         headers= {"apikey": API_KEY}
-        response = requests.request("GET", url, headers=headers, data = payload)
-        site_url = "https://" + clean_domain
-        response_for_bs = requests.get(site_url).text
-        bs = BeautifulSoup(response_for_bs,"html.parser")
-        results = response.json()
-        result = results.get("result","missing")
+        try:
+              response = requests.request("GET", url, headers=headers, data = payload)
+              site_url = "https://" + clean_domain
+              response_for_bs = requests.get(site_url).text
+              bs = BeautifulSoup(response_for_bs,"html.parser")
+              results = response.json()
+              result = results.get("result","missing")
+        except RequestException as e:
+              st.error(f"Failed to reach page : {e})
+              st.stop()
 
         #Feature engineering
         no_of_script = script_count(bs)
@@ -74,15 +78,15 @@ if button:
                                   "Number of <script> Tags":[no_of_script],
                                   "Domain Age(days)":[delta]
                                   })
-        
+                                  
         model = jb.load("phishing_detector_model.joblib")
         verdict = model.predict(features)[0]
 
         if verdict==1:
                 st.error("Phishing site detected")
-                st.error(verdict)
         else:
                 st.success("The site is safe")
+
 
 
 
