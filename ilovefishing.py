@@ -93,9 +93,24 @@ if button:
                       st.error("Phishing site detected")
               else:
                       st.success("The site is safe")
-      
-      
-      
+st.subheader("👨‍💻 Meet the Developers")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.markdown("""
+    **Jeremiah Adebayo**  
+    Machine Learning Engineer  
+    *Wrote the machine learning code and built the prediction engine.*
+    """)
+
+with col2:
+    st.markdown("""
+    **Daniel Ajayi**  
+    Cybersecurity Researcher  
+    *Conducted the research, selected features, and provided security insights.*
+    """)
+
 
 
 
