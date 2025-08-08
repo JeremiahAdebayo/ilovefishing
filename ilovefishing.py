@@ -12,7 +12,9 @@ from requests.exceptions import RequestException
 st.title("🔍 Phishing URL Detector")
 st.markdown("Enter a URL below to check if it's a phishing site.")
 domain = st.text_input("🔗 URL:").lower()
-button = st.button("verify")
+col1,col2,col3 = st.columns([1,2,3])
+with col2:
+      button = st.button("verify")
 API_KEY = st.secrets["API_KEY"]
 no_error = True 
 def get_value(result,key):
@@ -114,6 +116,7 @@ with col2:
     
     **Gmail:** Beajayilekan@gmail.com
     """)
+
 
 
 
