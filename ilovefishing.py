@@ -102,7 +102,7 @@ with col1:
     **Jeremiah Adebayo**  
     Machine Learning Engineer  
     *Wrote the machine learning code and built the prediction engine.*
-    **Gmail: ** Jrmhadebayo@gmail.com
+    **Gmail:** Jrmhadebayo@gmail.com
     """)
 
 with col2:
@@ -110,8 +110,9 @@ with col2:
     **Daniel Ajayi**  
     Cybersecurity Researcher  
     *Conducted the research, selected features, and provided security insights.*
-    **Gmail: ** Beajayilekan@gmail.com
+    **Gmail:** Beajayilekan@gmail.com
     """)
+
 
 
 
